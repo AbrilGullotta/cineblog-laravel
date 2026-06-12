@@ -1,0 +1,64 @@
+body {
+    background-color: #0f172a;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+}
+
+.editor-navbar {
+    background-color: #1d4ed8;
+}
+
+.editor-header {
+    background-color: #111827;
+    border-bottom: 1px solid #1d4ed8;
+}
+
+.editor-card {
+    background-color: #111827;
+    border: 1px solid #1d4ed8;
+    color: white;
+}
+
+.editor-texto-secundario {
+    color: #cbd5e1;
+}
+
+.btn-editor {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+}
+
+.btn-editor:hover {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+.btn-editor-outline {
+    border: 1px solid #2563eb;
+    color: white;
+}
+
+.btn-editor-outline:hover {
+    background-color: #2563eb;
+    color: white;
+}
+
+.editor-table {
+    color: white;
+    background-color: #111827;
+}
+
+.editor-table thead th {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+.footer-editor {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+.editor-table tbody tr:hover {
+    background-color: #273549;
+}
