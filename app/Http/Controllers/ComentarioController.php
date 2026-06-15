@@ -2,63 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comentario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ComentarioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Guardar nuevo comentario
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'contenido'       => 'required|max:500',
+            'publicacion_id'  => 'required|exists:publicaciones,id',
+        ]);
+
+        Comentario::create([
+            'contenido'        => $request->contenido,
+            'publicacion_id'   => $request->publicacion_id,
+            'user_id'          => Auth::id(),
+            'fecha_comentario' => now(),
+            'estado_comentario'=> true,
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Comentario agregado correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Eliminar comentario
+    public function destroy($id)
     {
-        //
+        $comentario = Comentario::findOrFail($id);
+        $comentario->delete();
+
+        return redirect()->back()
+            ->with('success', 'Comentario eliminado correctamente.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function index() {}
+    public function create() {}
+    public function show($id) {}
+    public function edit($id) {}
+    public function update(Request $request, $id) {}
 }

@@ -2,63 +2,125 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Publicacion;
+use App\Models\Categoria;
+use App\Models\Etiqueta;
+use App\Models\Pelicula;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PublicacionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Página de inicio — muestra todas las publicaciones publicadas
     public function index()
     {
-        //
+        $publicaciones = Publicacion::where('estado_publicacion', true)
+            ->with('categoria', 'user')
+            ->latest()
+            ->paginate(9);
+
+        return view('index', compact('publicaciones'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Detalle de una publicación
+    public function show($id)
+    {
+        $publicacion = Publicacion::with('user', 'categoria', 'etiquetas', 'comentarios.user', 'pelicula')
+            ->findOrFail($id);
+
+        return view('post', compact('publicacion'));
+    }
+
+    // Formulario para crear publicación (editor/admin)
     public function create()
     {
-        //
+        $categorias = Categoria::all();
+        $etiquetas = Etiqueta::all();
+        $peliculas = Pelicula::all();
+
+        return view('editor.posts', compact('categorias', 'etiquetas', 'peliculas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Guardar nueva publicación
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'titulo'           => 'required|max:255',
+            'contenido'        => 'required',
+            'categoria_id'     => 'required|exists:categorias,id',
+            'tipo_publicacion' => 'required',
+        ]);
+
+        $publicacion = Publicacion::create([
+            'titulo'            => $request->titulo,
+            'resumen'           => $request->resumen,
+            'contenido'         => $request->contenido,
+            'categoria_id'      => $request->categoria_id,
+            'pelicula_id'       => $request->pelicula_id,
+            'tipo_publicacion'  => $request->tipo_publicacion,
+            'estado_publicacion'=> $request->has('estado_publicacion'),
+            'imagen_portada'    => $request->imagen_portada,
+            'fecha_creacion'    => now(),
+            'fecha_publicacion' => now(),
+            'user_id'           => Auth::id(),
+        ]);
+
+        if ($request->etiquetas) {
+            $publicacion->etiquetas()->sync($request->etiquetas);
+        }
+
+        return redirect()->route('editor.publicaciones.index')
+            ->with('success', 'Publicación creada correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Formulario para editar
+    public function edit($id)
     {
-        //
+        $publicacion = Publicacion::findOrFail($id);
+        $categorias = Categoria::all();
+        $etiquetas = Etiqueta::all();
+        $peliculas = Pelicula::all();
+
+        return view('editor.posts', compact('publicacion', 'categorias', 'etiquetas', 'peliculas'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Actualizar publicación
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'titulo'           => 'required|max:255',
+            'contenido'        => 'required',
+            'categoria_id'     => 'required|exists:categorias,id',
+            'tipo_publicacion' => 'required',
+        ]);
+
+        $publicacion = Publicacion::findOrFail($id);
+
+        $publicacion->update([
+            'titulo'            => $request->titulo,
+            'resumen'           => $request->resumen,
+            'contenido'         => $request->contenido,
+            'categoria_id'      => $request->categoria_id,
+            'pelicula_id'       => $request->pelicula_id,
+            'tipo_publicacion'  => $request->tipo_publicacion,
+            'estado_publicacion'=> $request->has('estado_publicacion'),
+            'imagen_portada'    => $request->imagen_portada,
+        ]);
+
+        $publicacion->etiquetas()->sync($request->etiquetas ?? []);
+
+        return redirect()->route('editor.publicaciones.index')
+            ->with('success', 'Publicación actualizada correctamente.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Eliminar publicación
+    public function destroy($id)
     {
-        //
-    }
+        $publicacion = Publicacion::findOrFail($id);
+        $publicacion->etiquetas()->detach();
+        $publicacion->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('editor.publicaciones.index')
+            ->with('success', 'Publicación eliminada correctamente.');
     }
 }

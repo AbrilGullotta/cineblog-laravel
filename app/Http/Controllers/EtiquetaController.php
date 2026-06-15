@@ -2,63 +2,56 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Etiqueta;
 use Illuminate\Http\Request;
 
 class EtiquetaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Listar todas las etiquetas
     public function index()
     {
-        //
+        $etiquetas = Etiqueta::withCount('publicaciones')->get();
+        return view('editor.etiquetas', compact('etiquetas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Guardar nueva etiqueta
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre_etiqueta' => 'required|max:100|unique:etiquetas',
+        ]);
+
+        Etiqueta::create($request->only('nombre_etiqueta'));
+
+        return redirect()->route('editor.etiquetas.index')
+            ->with('success', 'Etiqueta creada correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Actualizar etiqueta
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nombre_etiqueta' => 'required|max:100|unique:etiquetas,nombre_etiqueta,' . $id,
+        ]);
+
+        $etiqueta = Etiqueta::findOrFail($id);
+        $etiqueta->update($request->only('nombre_etiqueta'));
+
+        return redirect()->route('editor.etiquetas.index')
+            ->with('success', 'Etiqueta actualizada correctamente.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Eliminar etiqueta
+    public function destroy($id)
     {
-        //
+        $etiqueta = Etiqueta::findOrFail($id);
+        $etiqueta->delete();
+
+        return redirect()->route('editor.etiquetas.index')
+            ->with('success', 'Etiqueta eliminada correctamente.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function create() { return redirect()->route('editor.etiquetas.index'); }
+    public function edit($id) { return redirect()->route('editor.etiquetas.index'); }
+    public function show($id) {}
 }

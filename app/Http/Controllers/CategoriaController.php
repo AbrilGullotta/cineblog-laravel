@@ -2,63 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Listar todas las categorías (admin/editor)
     public function index()
     {
-        //
+        $categorias = Categoria::withCount('publicaciones')->get();
+        return view('editor.categorias', compact('categorias'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Mostrar publicaciones de una categoría (público)
+    public function show($id)
     {
-        //
+        $categoria = Categoria::findOrFail($id);
+        $publicaciones = $categoria->publicaciones()
+            ->where('estado_publicacion', true)
+            ->with('user')
+            ->latest()
+            ->paginate(9);
+
+        return view('categorias', compact('categoria', 'publicaciones'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Guardar nueva categoría
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre_categoria' => 'required|max:100|unique:categorias',
+            'descripcion'      => 'nullable',
+        ]);
+
+        Categoria::create($request->only('nombre_categoria', 'descripcion'));
+
+        return redirect()->route('editor.categorias.index')
+            ->with('success', 'Categoría creada correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Actualizar categoría
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nombre_categoria' => 'required|max:100|unique:categorias,nombre_categoria,' . $id,
+            'descripcion'      => 'nullable',
+        ]);
+
+        $categoria = Categoria::findOrFail($id);
+        $categoria->update($request->only('nombre_categoria', 'descripcion'));
+
+        return redirect()->route('editor.categorias.index')
+            ->with('success', 'Categoría actualizada correctamente.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Eliminar categoría
+    public function destroy($id)
     {
-        //
+        $categoria = Categoria::findOrFail($id);
+        $categoria->delete();
+
+        return redirect()->route('editor.categorias.index')
+            ->with('success', 'Categoría eliminada correctamente.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function create() { return redirect()->route('editor.categorias.index'); }
+    public function edit($id) { return redirect()->route('editor.categorias.index'); }
 }

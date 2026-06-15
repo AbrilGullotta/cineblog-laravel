@@ -3,63 +3,28 @@
 namespace App\Http\Controllers\Editor;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Publicacion;
+use App\Models\Comentario;
+use App\Models\Categoria;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-    }
+        $misPublicaciones = Publicacion::where('user_id', Auth::id())->count();
+        $misComentarios   = Comentario::where('user_id', Auth::id())->count();
+        $totalCategorias  = Categoria::count();
+        $ultimasPublicaciones = Publicacion::where('user_id', Auth::id())
+            ->latest()
+            ->take(5)
+            ->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('editor.dashboard', compact(
+            'misPublicaciones',
+            'misComentarios',
+            'totalCategorias',
+            'ultimasPublicaciones'
+        ));
     }
 }
