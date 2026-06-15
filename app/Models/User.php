@@ -20,6 +20,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'apellido', 
+        'foto_perfil', 
+        'fecha_registro', 
+        'rol_id'
     ];
 
     /**
@@ -44,4 +48,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function rol() {
+    return $this->belongsTo(Rol::class);
+}
+public function publicaciones() {
+    return $this->hasMany(Publicacion::class);
+}
+public function comentarios() {
+    return $this->hasMany(Comentario::class);
+}
+public function puntuaciones() {
+    return $this->hasMany(Puntuacion::class);
+}
+public function likes() {
+    return $this->hasMany(LikePublicacion::class);
+}
 }
