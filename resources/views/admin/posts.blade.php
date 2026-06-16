@@ -1,113 +1,63 @@
 @extends('layouts.app')
 
-@section('title', 'Posts - Admin')
-
-@section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-@endsection
+@section('title', 'Admin - Publicaciones')
 
 @section('content')
+<div class="container py-5">
 
-<section class="admin-header py-5">
-    <div class="container">
-        <h1 class="fw-bold mb-2">Supervisión de publicaciones</h1>
-        <p class="admin-texto-secundario mb-0">
-            Consultá todas las publicaciones del sistema y supervisa el contenido generado por los editores.
-        </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Todas las publicaciones</h2>
+        <a href="{{ route('admin.publicaciones.create') }}" class="btn btn-amarillo">+ Nueva publicación</a>
     </div>
-</section>
 
-<section class="py-5">
-    <div class="container">
-        <div class="table-responsive">
-            <table class="table admin-table align-middle">
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Tipo</th>
-                        <th>Categoría</th>
-                        <th>Editor</th>
-                        <th>Fecha</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
+    <div class="card card-estreno p-4">
+        <table class="table table-dark table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Categoría</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($publicaciones ?? [] as $pub)
                     <tr>
-                        <td>The Devil Wears Prada 2</td>
-                        <td>Reseña</td>
-                        <td>Estrenos</td>
-                        <td>Araceli Gómez</td>
-                        <td>19/04/2026</td>
-                        <td><span class="badge text-bg-success">Publicada</span></td>
+                        <td>{{ $pub->titulo }}</td>
+                        <td>{{ $pub->user->name }}</td>
+                        <td>{{ $pub->categoria->nombre_categoria }}</td>
+                        <td>{{ $pub->tipo_publicacion }}</td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-admin me-2">Ver</a>
-                            <a href="#" class="btn btn-sm btn-admin-outline me-2">Ocultar</a>
-                            <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
+                            <span class="badge {{ $pub->estado_publicacion ? 'bg-success' : 'bg-secondary' }}">
+                                {{ $pub->estado_publicacion ? 'Publicado' : 'Borrador' }}
+                            </span>
+                        </td>
+                        <td>{{ \Carbon\Carbon::parse($pub->fecha_creacion)->format('d/m/Y') }}</td>
+                        <td>
+                            <a href="{{ route('admin.publicaciones.edit', $pub->id) }}" class="btn btn-sm btn-outline-light me-1">Editar</a>
+                            <form action="{{ route('admin.publicaciones.destroy', $pub->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('¿Eliminás esta publicación?')">Eliminar</button>
+                            </form>
                         </td>
                     </tr>
-
+                @empty
                     <tr>
-                        <td>Project Hail Mary</td>
-                        <td>Reseña</td>
-                        <td>Estrenos</td>
-                        <td>Juan Pérez</td>
-                        <td>16/04/2026</td>
-                        <td><span class="badge text-bg-secondary">Borrador</span></td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-admin me-2">Ver</a>
-                            <a href="#" class="btn btn-sm btn-admin-outline me-2">Ocultar</a>
-                            <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
-                        </td>
+                        <td colspan="7" class="text-center texto-secundario">No hay publicaciones todavía.</td>
                     </tr>
-
-                    <tr>
-                        <td>Cannes confirmó nuevas películas</td>
-                        <td>Noticia</td>
-                        <td>Noticias</td>
-                        <td>Araceli Gómez</td>
-                        <td>15/04/2026</td>
-                        <td><span class="badge text-bg-success">Publicada</span></td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-admin me-2">Ver</a>
-                            <a href="#" class="btn btn-sm btn-admin-outline me-2">Ocultar</a>
-                            <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Maratón de clásicos en el cine</td>
-                        <td>Evento</td>
-                        <td>Eventos</td>
-                        <td>Lucía Torres</td>
-                        <td>12/04/2026</td>
-                        <td><span class="badge text-bg-success">Publicada</span></td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-admin me-2">Ver</a>
-                            <a href="#" class="btn btn-sm btn-admin-outline me-2">Ocultar</a>
-                            <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>5 películas para ver este fin de semana</td>
-                        <td>Recomendación</td>
-                        <td>Recomendaciones</td>
-                        <td>Juan Pérez</td>
-                        <td>10/04/2026</td>
-                        <td><span class="badge text-bg-secondary">Borrador</span></td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-admin me-2">Ver</a>
-                            <a href="#" class="btn btn-sm btn-admin-outline me-2">Ocultar</a>
-                            <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
-        </div>
+                @endforelse
+            </tbody>
+        </table>
     </div>
-</section>
 
+</div>
 @endsection
