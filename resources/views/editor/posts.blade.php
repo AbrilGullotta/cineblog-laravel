@@ -27,7 +27,7 @@
             </form>
         </div>
     @else
-        <div class="card card-estreno p-4 mb-5" id="form-crear" style="display:none!important">
+        <div class="card card-estreno p-4 mb-5" id="form-crear">
             <h4 class="mb-3">Nueva publicación</h4>
             <form action="{{ route('editor.publicaciones.store') }}" method="POST">
                 @csrf

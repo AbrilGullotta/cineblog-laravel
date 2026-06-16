@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Rutas para editor
-Route::middleware(['auth'])->prefix('editor')->name('editor.')->group(function () {
+Route::middleware(['auth', 'rol:editor'])->prefix('editor')->name('editor.')->group(function () {
 
     Route::get('/dashboard', [EditorDashboard::class, 'index'])->name('dashboard');
     Route::resource('publicaciones', PublicacionController::class);
@@ -45,7 +45,7 @@ Route::middleware(['auth'])->prefix('editor')->name('editor.')->group(function (
 });
 
 // Rutas para admin
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'rol:admin'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
     Route::resource('publicaciones', PublicacionController::class);

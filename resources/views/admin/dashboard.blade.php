@@ -39,15 +39,17 @@
             </div>
         </div>
 
-        <div class="col-12 mt-2">
-            <div class="card card-estreno p-4">
-                <h4 class="mb-3">Gestión rápida</h4>
-                <div class="d-flex gap-3 flex-wrap">
-                    <a href="{{ route('admin.publicaciones.index') }}" class="btn btn-amarillo">Publicaciones</a>
-                    <a href="{{ route('admin.categorias.index') }}" class="btn btn-outline-light">Categorías</a>
-                    <a href="{{ route('admin.etiquetas.index') }}" class="btn btn-outline-light">Etiquetas</a>
-                    <a href="{{ route('admin.peliculas.index') }}" class="btn btn-outline-light">Películas</a>
-                </div>
+       <div class="col-12 mt-2">
+    <div class="card card-estreno p-4">
+        <h4 class="mb-3">Gestión rápida</h4>
+        <div class="d-flex gap-3 flex-wrap">
+            <a href="{{ route('admin.publicaciones.index') }}" class="btn btn-amarillo">Publicaciones</a>
+            <a href="{{ route('editor.categorias.index') }}" class="btn btn-amarillo">Categorías</a>
+            <a href="{{ route('editor.etiquetas.index') }}" class="btn btn-amarillo">Etiquetas</a>
+            <a href="{{ route('admin.peliculas.index') }}" class="btn btn-amarillo">Películas</a>
+        </div>
+    </div>
+</div>
             </div>
         </div>
 
