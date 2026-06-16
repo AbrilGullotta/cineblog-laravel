@@ -2,7 +2,7 @@
     <div class="container">
 
         <a class="navbar-brand fw-bold fs-3" href="{{ route('inicio') }}">
-            ···Cineblog
+            Cineblog
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContenido">

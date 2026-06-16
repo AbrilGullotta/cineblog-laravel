@@ -67,7 +67,7 @@
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" name="etiquetas[]"
                     value="{{ $etiqueta->id }}" id="etiqueta_{{ $etiqueta->id }}"
-                    {{ in_array($etiqueta->id, old('etiquetas', $publicacion->etiquetas->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
+                   {{ in_array($etiqueta->id, old('etiquetas', isset($publicacion) ? $publicacion->etiquetas->pluck('id')->toArray() : [])) ? 'checked' : '' }}
                 <label class="form-check-label" for="etiqueta_{{ $etiqueta->id }}">
                     {{ $etiqueta->nombre_etiqueta }}
                 </label>

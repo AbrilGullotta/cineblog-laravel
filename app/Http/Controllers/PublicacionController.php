@@ -11,25 +11,33 @@ use Illuminate\Support\Facades\Auth;
 
 class PublicacionController extends Controller
 {
-    // Página de inicio — muestra todas las publicaciones publicadas
-    public function index()
-    {
-        $publicaciones = Publicacion::where('estado_publicacion', true)
+public function index()
+{
+    if (request()->is('editor/*')) {
+        $publicaciones = Publicacion::where('user_id', Auth::id())
             ->with('categoria', 'user')
             ->latest()
-            ->paginate(9);
-
-        return view('index', compact('publicaciones'));
+            ->paginate(10);
+        $categorias = Categoria::all();
+        $etiquetas = Etiqueta::all();
+        $peliculas = Pelicula::all();
+        return view('editor.posts', compact('publicaciones', 'categorias', 'etiquetas', 'peliculas'));
     }
 
-    // Detalle de una publicación
-    public function show($id)
-    {
-        $publicacion = Publicacion::with('user', 'categoria', 'etiquetas', 'comentarios.user', 'pelicula')
-            ->findOrFail($id);
+    $publicaciones = Publicacion::where('estado_publicacion', true)
+        ->with('categoria', 'user')
+        ->latest()
+        ->paginate(9);
 
-        return view('post', compact('publicacion'));
-    }
+    return view('index', compact('publicaciones'));
+}
+public function show($id)
+{
+    $publicacion = Publicacion::with('user', 'categoria', 'etiquetas', 'comentarios.user', 'pelicula')
+        ->findOrFail($id);
+
+    return view('post', compact('publicacion'));
+}
 
     // Formulario para crear publicación (editor/admin)
     public function create()

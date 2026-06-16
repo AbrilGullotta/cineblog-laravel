@@ -15,11 +15,10 @@
         <div class="row g-4">
 
             <div class="col-lg-4">
-                @if($publicacion->imagen_portada)
-                    <img src="{{ asset('img/estrenos/' . $publicacion->imagen_portada) }}" class="img-fluid post-poster" alt="{{ $publicacion->titulo }}">
-                @else
-                    <img src="{{ asset('img/estrenos/thedrama.jpg') }}" class="img-fluid post-poster" alt="{{ $publicacion->titulo }}">
-                @endif
+               @php
+    $carpeta = in_array($publicacion->tipo_publicacion, ['noticia']) ? 'noticias' : 'estrenos';
+@endphp
+<img src="{{ asset('img/' . $carpeta . '/' . $publicacion->imagen_portada) }}" class="img-fluid post-poster" alt="{{ $publicacion->titulo }}">
             </div>
 
             <div class="col-lg-8">
