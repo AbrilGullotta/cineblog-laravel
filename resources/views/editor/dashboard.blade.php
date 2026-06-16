@@ -1,107 +1,68 @@
 @extends('layouts.app')
 
-@section('title', 'Panel del editor - Cineblog')
-
-@section('styles')
-    <link rel="stylesheet" href="{{ asset('css/editor.css') }}">
-@endsection
+@section('title', 'Panel Editor')
 
 @section('content')
+<div class="container py-5">
+    <div class="row g-4">
 
-<section class="editor-header py-5">
-    <div class="container">
-        <h1 class="fw-bold mb-2">Panel del editor</h1>
-        <p class="editor-texto-secundario mb-0">
-            Desde aquí podés gestionar publicaciones, categorías, etiquetas y moderar comentarios del blog.
-        </p>
-    </div>
-</section>
-
-<section class="py-5">
-    <div class="container">
-        <div class="row g-4">
-
-            <div class="col-md-6 col-lg-3">
-                <div class="card editor-card h-100">
-                    <div class="card-body">
-                        <h4 class="card-title mb-3">Publicaciones</h4>
-                        <p class="editor-texto-secundario">
-                            Crea, edita, publica o elimina artículos del blog.
-                        </p>
-                        <a href="/editor/posts" class="btn btn-editor">Gestionar</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3">
-                <div class="card editor-card h-100">
-                    <div class="card-body">
-                        <h4 class="card-title mb-3">Categorías</h4>
-                        <p class="editor-texto-secundario">
-                            Organiza el contenido del sitio mediante categorías.
-                        </p>
-                        <a href="/editor/categorias" class="btn btn-editor">Gestionar</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3">
-                <div class="card editor-card h-100">
-                    <div class="card-body">
-                        <h4 class="card-title mb-3">Etiquetas</h4>
-                        <p class="editor-texto-secundario">
-                            Administra las etiquetas para clasificar las publicaciones.
-                        </p>
-                        <a href="/editor/etiquetas" class="btn btn-editor">Gestionar</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3">
-                <div class="card editor-card h-100">
-                    <div class="card-body">
-                        <h4 class="card-title mb-3">Comentarios</h4>
-                        <p class="editor-texto-secundario">
-                            Revisa y modera los comentarios realizados por los usuarios.
-                        </p>
-                        <a href="/editor/comentarios" class="btn btn-editor">Gestionar</a>
-                    </div>
-                </div>
-            </div>
-
+        <div class="col-12">
+            <h2 class="fw-bold">Panel de Editor</h2>
+            <p class="texto-secundario">Bienvenido, {{ Auth::user()->name }}</p>
         </div>
-    </div>
-</section>
 
-<section class="pb-5">
-    <div class="container">
-        <h2 class="mb-4">Resumen editorial</h2>
-
-        <div class="row g-4">
-
-            <div class="col-md-4">
-                <div class="editor-resumen-box text-center">
-                    <p class="editor-num mb-1">18</p>
-                    <p class="mb-0 editor-texto-secundario">Publicaciones activas</p>
-                </div>
+        <div class="col-md-4">
+            <div class="card card-estreno text-center p-4">
+                <h1 class="display-4 fw-bold texto-amarillo">{{ $misPublicaciones }}</h1>
+                <p class="mb-0">Mis publicaciones</p>
             </div>
-
-            <div class="col-md-4">
-                <div class="editor-resumen-box text-center">
-                    <p class="editor-num mb-1">5</p>
-                    <p class="mb-0 editor-texto-secundario">Borradores</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="editor-resumen-box text-center">
-                    <p class="editor-num mb-1">12</p>
-                    <p class="mb-0 editor-texto-secundario">Comentarios pendientes</p>
-                </div>
-            </div>
-
         </div>
-    </div>
-</section>
 
+        <div class="col-md-4">
+            <div class="card card-estreno text-center p-4">
+                <h1 class="display-4 fw-bold texto-amarillo">{{ $misComentarios }}</h1>
+                <p class="mb-0">Mis comentarios</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-estreno text-center p-4">
+                <h1 class="display-4 fw-bold texto-amarillo">{{ $totalCategorias }}</h1>
+                <p class="mb-0">Categorías disponibles</p>
+            </div>
+        </div>
+
+        <div class="col-12 mt-2">
+            <div class="card card-estreno p-4">
+                <h4 class="mb-3">Acciones rápidas</h4>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{{ route('editor.publicaciones.create') }}" class="btn btn-amarillo">Nueva publicación</a>
+                    <a href="{{ route('editor.publicaciones.index') }}" class="btn btn-outline-light">Mis publicaciones</a>
+                    <a href="{{ route('editor.categorias.index') }}" class="btn btn-outline-light">Categorías</a>
+                    <a href="{{ route('editor.etiquetas.index') }}" class="btn btn-outline-light">Etiquetas</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card card-estreno p-4">
+                <h4 class="mb-3">Últimas publicaciones</h4>
+                @forelse($ultimasPublicaciones as $pub)
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-secondary">
+                        <span>{{ $pub->titulo }}</span>
+                        <div class="d-flex gap-2">
+                            <span class="badge {{ $pub->estado_publicacion ? 'bg-success' : 'bg-secondary' }}">
+                                {{ $pub->estado_publicacion ? 'Publicado' : 'Borrador' }}
+                            </span>
+                            <a href="{{ route('editor.publicaciones.edit', $pub->id) }}" class="btn btn-sm btn-outline-light">Editar</a>
+                        </div>
+                    </div>
+                @empty
+                    <p class="texto-secundario mb-0">No tenés publicaciones todavía.</p>
+                @endforelse
+            </div>
+        </div>
+
+    </div>
+</div>
 @endsection

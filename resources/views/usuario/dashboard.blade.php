@@ -1,93 +1,47 @@
 @extends('layouts.app')
 
-@section('title', 'Panel de usuario - Cineblog')
+@section('title', 'Mi Panel')
 
 @section('content')
+<div class="container py-5">
+    <div class="row g-4">
 
-<section class="perfil-header py-5">
-    <div class="container">
-        <h1 class="fw-bold mb-2">Bienvenida, Mica</h1>
-        <p class="texto-secundario mb-0">
-            Desde acá podés acceder a tu perfil, ver tus comentarios y revisar tus publicaciones favoritas.
-        </p>
-    </div>
-</section>
+        <div class="col-12">
+            <h2 class="fw-bold">Bienvenido, {{ Auth::user()->name }}</h2>
+            <p class="texto-secundario">Este es tu panel personal.</p>
+        </div>
 
-<section class="py-5">
-    <div class="container">
-        <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card card-estreno text-center p-4">
+                <h1 class="display-4 fw-bold texto-amarillo">{{ Auth::user()->publicaciones->count() }}</h1>
+                <p class="mb-0">Publicaciones</p>
+            </div>
+        </div>
 
-            <div class="col-md-4">
-                <div class="card card-actividad h-100">
-                    <div class="card-body">
-                        <h4 class="card-title mb-3">Mi perfil</h4>
-                        <p class="texto-secundario">
-                            Editá tus datos personales, revisá tu información de cuenta y actualizá tu perfil.
-                        </p>
-                        <a href="/usuario/perfil" class="btn btn-amarillo">Ir a mi perfil</a>
-                    </div>
+        <div class="col-md-4">
+            <div class="card card-estreno text-center p-4">
+                <h1 class="display-4 fw-bold texto-amarillo">{{ Auth::user()->comentarios->count() }}</h1>
+                <p class="mb-0">Comentarios</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-estreno text-center p-4">
+                <h1 class="display-4 fw-bold texto-amarillo">{{ Auth::user()->likes->count() }}</h1>
+                <p class="mb-0">Likes</p>
+            </div>
+        </div>
+
+        <div class="col-12 mt-4">
+            <div class="card card-estreno p-4">
+                <h4 class="mb-3">Acciones rápidas</h4>
+                <div class="d-flex gap-3">
+                    <a href="{{ route('usuario.perfil') }}" class="btn btn-amarillo">Mi perfil</a>
+                    <a href="{{ route('inicio') }}" class="btn btn-outline-light">Ver publicaciones</a>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card card-actividad h-100">
-                    <div class="card-body">
-                        <h4 class="card-title mb-3">Mis comentarios</h4>
-                        <p class="texto-secundario">
-                            Consultá el historial de comentarios que realizaste en publicaciones del blog.
-                        </p>
-                        <a href="/usuario/comentarios" class="btn btn-amarillo">Ver comentarios</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card card-actividad h-100">
-                    <div class="card-body">
-                        <h4 class="card-title mb-3">Favoritas</h4>
-                        <p class="texto-secundario">
-                            Accedé a tus publicaciones o películas guardadas para volver a verlas cuando quieras.
-                        </p>
-                        <a href="/usuario/dashboard" class="btn btn-amarillo">Ver favoritas</a>
-                    </div>
-                </div>
-            </div>
-
         </div>
+
     </div>
-</section>
-
-<section class="py-5">
-    <div class="container">
-        <h2 class="mb-4">Actividad reciente</h2>
-
-        <div class="card card-actividad mb-3">
-            <div class="card-body">
-                <h5 class="mb-1">Último comentario realizado</h5>
-                <p class="texto-secundario mb-0">
-                    “Miranda sigue siendo lo mejor de la película.” en la publicación <strong>The Devil Wears Prada 2</strong>.
-                </p>
-            </div>
-        </div>
-
-        <div class="card card-actividad mb-3">
-            <div class="card-body">
-                <h5 class="mb-1">Última publicación guardada</h5>
-                <p class="texto-secundario mb-0">
-                    Guardaste la reseña de <strong>Project Hail Mary</strong> para leer más tarde.
-                </p>
-            </div>
-        </div>
-
-        <div class="card card-actividad">
-            <div class="card-body">
-                <h5 class="mb-1">Última película puntuada</h5>
-                <p class="texto-secundario mb-0">
-                    Calificaste <strong>The Devil Wears Prada 2</strong> con 4 estrellas.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
+</div>
 @endsection
