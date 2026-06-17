@@ -20,11 +20,15 @@
             @forelse($publicaciones as $publicacion)
                 <div class="col-6 col-md-4 col-lg-3">
                     <div class="card card-estreno h-100">
-                        @if($publicacion->imagen_portada)
-                            <img src="{{ asset('img/estrenos/' . $publicacion->imagen_portada) }}" class="card-img-top" alt="{{ $publicacion->titulo }}">
-                        @else
-                            <img src="{{ asset('img/estrenos/thedrama.jpg') }}" class="card-img-top" alt="{{ $publicacion->titulo }}">
-                        @endif
+                       @php
+    $carpetasNoticias = ['noticia', 'evento'];
+    $carpeta = in_array($publicacion->tipo_publicacion, $carpetasNoticias) ? 'noticias' : 'estrenos';
+@endphp
+@if($publicacion->imagen_portada)
+    <img src="{{ asset('img/' . $carpeta . '/' . $publicacion->imagen_portada) }}" class="card-img-top" alt="{{ $publicacion->titulo }}">
+@else
+    <img src="{{ asset('img/estrenos/thedrama.jpg') }}" class="card-img-top" alt="{{ $publicacion->titulo }}">
+@endif
                         <div class="card-body">
                             <h5 class="card-title">{{ $publicacion->titulo }}</h5>
                             <p class="card-text texto-secundario">

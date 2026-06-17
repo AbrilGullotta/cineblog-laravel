@@ -48,14 +48,14 @@
             <div class="card card-estreno h-100 p-4">
                 <h4 class="fw-bold">Mis comentarios</h4>
                 <p class="texto-secundario">Consultá el historial de comentarios que realizaste en publicaciones del blog.</p>
-                <a href="#" class="btn btn-amarillo">Ver comentarios</a>
+               <a href="{{ route('usuario.comentarios') }}" class="btn btn-amarillo">Ver comentarios</a>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card card-estreno h-100 p-4">
                 <h4 class="fw-bold">Favoritas</h4>
                 <p class="texto-secundario">Accedé a tus publicaciones o películas guardadas para volver a verlas cuando quieras.</p>
-                <a href="#" class="btn btn-amarillo">Ver favoritas</a>
+                <a href="{{ route('usuario.favoritas') }}" class="btn btn-amarillo">Ver favoritas</a>
             </div>
         </div>
     </div>

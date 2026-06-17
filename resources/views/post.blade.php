@@ -40,6 +40,18 @@
                         @endforeach
                     </div>
                 @endif
+                @auth
+    @php
+        $liked = \App\Models\LikePublicacion::where('user_id', Auth::id())
+            ->where('publicacion_id', $publicacion->id)->exists();
+    @endphp
+    <form action="{{ route('publicacion.like', $publicacion->id) }}" method="POST" class="d-inline mb-3">
+        @csrf
+        <button type="submit" class="btn btn-sm {{ $liked ? 'btn-amarillo' : 'btn-outline-light' }} mb-3">
+            {{ $liked ? '★ Guardado en favoritas' : '☆ Guardar en favoritas' }}
+        </button>
+    </form>
+@endauth
 
                 <div class="post-content">
                     {!! nl2br(e($publicacion->contenido)) !!}

@@ -2,10 +2,6 @@
 
 @section('title', 'Mis comentarios - Cineblog')
 
-@section('styles')
-    <link rel="stylesheet" href="{{ asset('css/usuario.css') }}">
-@endsection
-
 @section('content')
 
 <section class="perfil-header py-5">
@@ -20,38 +16,30 @@
 <section class="py-5">
     <div class="container">
 
-        <div class="card card-actividad mb-4">
-            <div class="card-body">
-                <h5 class="mb-2">The Devil Wears Prada 2</h5>
-                <p class="texto-secundario mb-2">19 de abril de 2026</p>
-                <p class="mb-3">
-                    Miranda sigue siendo lo mejor de la película. Cada escena con ella eleva todo.
-                </p>
-                <a href="/post" class="link-amarillo">Ver publicación</a>
+        @forelse($comentarios as $comentario)
+            <div class="card card-estreno mb-4">
+                <div class="card-body p-4">
+                    <h5 class="mb-1">{{ $comentario->publicacion->titulo }}</h5>
+                    <p class="texto-secundario mb-2">
+                        {{ \Carbon\Carbon::parse($comentario->fecha_comentario)->format('d \d\e F \d\e Y') }}
+                    </p>
+                    <p class="mb-3">{{ $comentario->contenido }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ route('publicacion.show', $comentario->publicacion_id) }}" class="btn btn-amarillo btn-sm">Ver publicación</a>
+                        <form action="{{ route('comentarios.destroy', $comentario->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('¿Eliminás este comentario?')">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="card card-actividad mb-4">
-            <div class="card-body">
-                <h5 class="mb-2">Project Hail Mary</h5>
-                <p class="texto-secundario mb-2">16 de abril de 2026</p>
-                <p class="mb-3">
-                    Me sorprendió mucho más de lo que esperaba. Tiene humor, tensión y momentos muy emotivos.
-                </p>
-                <a href="/post" class="link-amarillo">Ver publicación</a>
+        @empty
+            <div class="card card-estreno p-4">
+                <p class="texto-secundario mb-0">No realizaste ningún comentario todavía.</p>
             </div>
-        </div>
-
-        <div class="card card-actividad mb-4">
-            <div class="card-body">
-                <h5 class="mb-2">The Drama</h5>
-                <p class="texto-secundario mb-2">12 de abril de 2026</p>
-                <p class="mb-3">
-                    No sabía si me iba a gustar, pero terminó siendo una de mis favoritas del año.
-                </p>
-                <a href="/post" class="link-amarillo">Ver publicación</a>
-            </div>
-        </div>
+        @endforelse
 
     </div>
 </section>

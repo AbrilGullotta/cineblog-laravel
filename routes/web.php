@@ -29,6 +29,37 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/comentarios', [ComentarioController::class, 'store'])->name('comentarios.store');
     Route::delete('/comentarios/{id}', [ComentarioController::class, 'destroy'])->name('comentarios.destroy');
+    Route::get('/usuario/comentarios', function() {
+    $comentarios = \App\Models\Comentario::where('user_id', Auth::id())
+        ->with('publicacion')
+        ->latest()
+        ->get();
+    return view('usuario.comentarios', compact('comentarios'));
+})->name('usuario.comentarios');
+Route::get('/usuario/favoritas', function() {
+    $likes = \App\Models\LikePublicacion::where('user_id', Auth::id())
+        ->with('publicacion.categoria')
+        ->latest()
+        ->get();
+    return view('usuario.favoritas', compact('likes'));
+})->name('usuario.favoritas');
+Route::post('/publicacion/{id}/like', function($id) {
+    $existe = \App\Models\LikePublicacion::where('user_id', Auth::id())
+        ->where('publicacion_id', $id)
+        ->first();
+
+    if ($existe) {
+        $existe->delete();
+    } else {
+        \App\Models\LikePublicacion::create([
+            'user_id' => Auth::id(),
+            'publicacion_id' => $id,
+            'fecha_like' => now()
+        ]);
+    }
+
+    return redirect()->back();
+})->name('publicacion.like');
 });
 
 // Rutas para editor
