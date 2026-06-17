@@ -24,6 +24,13 @@ public function index()
         return view('editor.posts', compact('publicaciones', 'categorias', 'etiquetas', 'peliculas'));
     }
 
+    if (request()->is('admin/*')) {
+        $publicaciones = Publicacion::with('categoria', 'user')
+            ->latest()
+            ->paginate(10);
+        return view('admin.posts', compact('publicaciones'));
+    }
+
     $publicaciones = Publicacion::where('estado_publicacion', true)
         ->with('categoria', 'user')
         ->latest()
